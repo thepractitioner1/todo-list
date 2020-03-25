@@ -1,5 +1,6 @@
 package org.misan.config;
 
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -10,7 +11,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
 @Slf4j
-
 public class WellAppInitializer implements WebApplicationInitializer {
 
     private static final String DISPATCHER_SERVLET_NAME = "dispatcher";
