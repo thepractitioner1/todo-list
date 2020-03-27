@@ -1,3 +1,5 @@
 org/misan/controller/DemoController.class
+org/misan/services/DemoService.class
+org/misan/services/DemoServiceImpl.class
 org/misan/config/WebConfig.class
 org/misan/config/WellAppInitializer.class
