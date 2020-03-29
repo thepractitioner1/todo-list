@@ -10,9 +10,7 @@ import org.misan.utils.ViewNames;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
@@ -31,30 +29,53 @@ public class TodoItemController {
     // ==Model Attribute ==
 
     @ModelAttribute
-    public TodoData todoData(){
+    public TodoData todoData() {
         return todoItemService.getData();
     }
 
     // == handler methods ==
 
     @GetMapping(Mappings.ITEMS)
-    public String items(){
+    public String items() {
         return ViewNames.ITEMS_LIST;
     }
 
     @GetMapping(Mappings.ADD_ITEM)
-    public String addEditItem(Model model){
-        TodoItem todoItem = new TodoItem("","", LocalDate.now());
-        model.addAttribute(AttributeNames.TODO_ITEM,todoItem);
+    public String addEditItem(@RequestParam(required = false, defaultValue = "-1") int id, Model model) {
+        TodoItem todoItem = todoItemService.getItem(id);
+        if (todoItem == null) {
+
+            todoItem = new TodoItem("", "", LocalDate.now());
+        }
+
+        model.addAttribute(AttributeNames.TODO_ITEM, todoItem);
         return ViewNames.ADD_ITEM;
     }
 
     @PostMapping(Mappings.ADD_ITEM)
-    public String processItem(@ModelAttribute(AttributeNames.TODO_ITEM) TodoItem todoItem){
-        log.info("todoitem from = {}",todoItem);
-        todoItemService.addItem(todoItem);
+    public String processItem(@ModelAttribute(AttributeNames.TODO_ITEM) TodoItem todoItem) {
+        log.info("todoitem from = {}", todoItem);
+        if (todoItem.getId() == 0) {
+            todoItemService.addItem(todoItem);
+        }else{
+            todoItemService.updateItem(todoItem);
+        }
         return "redirect:/" + Mappings.ITEMS;
 
+    }
+
+
+    @GetMapping(Mappings.DELETE_ITEM)
+    public String deleteItem(@RequestParam int id) {
+        todoItemService.removeItem(id);
+        return "redirect:/" + Mappings.ITEMS;
+    }
+
+    @GetMapping
+    public String viewItem(@RequestParam int id, Model model){
+        TodoItem todoItem = todoItemService.getItem(id);
+        model.addAttribute(AttributeNames.TODO_ITEM,todoItem);
+        return ViewNames.VIEW_ITEM;
     }
 
 
